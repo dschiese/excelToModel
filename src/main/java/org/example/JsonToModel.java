@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface JsonToModel {
 
-    void parseJsonToModel(JSONObject jsonObject);
+    String parseJsonToModel(String file);
 
     List<Statement> createStatements(JSONObject singleTest, Resource experimentId);
 

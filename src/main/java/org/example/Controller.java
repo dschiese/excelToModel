@@ -13,7 +13,7 @@ public class Controller {
 
     @GetMapping("/abc")
     public ResponseEntity<?> send() {
-        return new ResponseEntity<>(jsonToModelAutomatedTest.jsonToModel(), HttpStatus.OK);
+        return new ResponseEntity<>(jsonToModelAutomatedTest.parseJsonToModel("example.json"), HttpStatus.OK);
     }
 
 }

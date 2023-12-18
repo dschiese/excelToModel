@@ -78,16 +78,14 @@ public class JsonToModelAutomatedTest implements JsonToModel {
             org.springframework.core.io.Resource resource = new ClassPathResource("example.json");
             String jsonString = new String(FileCopyUtils.copyToByteArray(resource.getInputStream()));
             return new JSONObject(jsonString);
-            logger.info("{}", jsonObject);
         } catch (Exception e) {
             logger.error(e.toString());
         }
-
+        return null;
     }
 
-    public void parseJsonToModel(String file) {
+    public String parseJsonToModel(String file) {
         JSONObject jsonObject = parseFileToJSONObject();
-
         // Get the array of experiments
         JSONArray experiments = jsonObject.getJSONArray("explanations");
         VirtModel virtModel;
@@ -104,6 +102,8 @@ public class JsonToModelAutomatedTest implements JsonToModel {
             virtModel.add(tempModel);
             virtModel.close();
         }
+
+        return jsonObject.toString();
     }
 
     public List<Statement> createStatements(JSONObject singleTest, Resource experimentId) {
@@ -112,7 +112,7 @@ public class JsonToModelAutomatedTest implements JsonToModel {
         JSONObject testObject = singleTest.getJSONObject("testData");
         JSONArray examples = singleTest.getJSONArray("exampleData");
 
-        statements.add(ResourceFactory.createStatement(experimentId, prompt, ResourceFactory.createPlainLiteral(singleTest.getString("getPrompt"))));
+        statements.add(ResourceFactory.createStatement(experimentId, prompt, ResourceFactory.createPlainLiteral(singleTest.getString("prompt"))));
         statements.add(ResourceFactory.createStatement(experimentId, gptExplanation, ResourceFactory.createPlainLiteral(singleTest.getString("gptExplanation"))));
         statements.add(ResourceFactory.createStatement(experimentId, testData, setUpTestObject(testObject)));
         statements.add(ResourceFactory.createStatement(experimentId, exampleData, setUpExampleData(examples)));
@@ -126,11 +126,11 @@ public class JsonToModelAutomatedTest implements JsonToModel {
         // Add items to object
         resource.addProperty(annotationType, ResourceFactory.createPlainLiteral(testData.getString("annotationType")));
         resource.addProperty(usedComponent, ResourceFactory.createPlainLiteral(testData.getString("usedComponent")));
-        resource.addProperty(usedComponentAsNum, ResourceFactory.createPlainLiteral(testData.getString("usedComponentAsNum")));
-        resource.addProperty(dataset, ResourceFactory.createPlainLiteral(testData.getString("dataset")));
-        resource.addProperty(graphId, ResourceFactory.createPlainLiteral(testData.getString("graphId")));
+        resource.addProperty(usedComponentAsNum, ResourceFactory.createPlainLiteral(String.valueOf(testData.get("componentNumber"))));
+        resource.addProperty(dataset, ResourceFactory.createPlainLiteral(testData.getString("dataSet")));
+        resource.addProperty(graphId, ResourceFactory.createPlainLiteral(testData.getString("graphID")));
         resource.addProperty(explanation, ResourceFactory.createPlainLiteral(testData.getString("explanation")));
-        resource.addProperty(questionId, ResourceFactory.createPlainLiteral(testData.getString("questionId")));
+        resource.addProperty(questionId, ResourceFactory.createPlainLiteral(testData.getString("questionID")));
         resource.addProperty(question, ResourceFactory.createPlainLiteral(testData.getString("question")));
 
         return resource;
