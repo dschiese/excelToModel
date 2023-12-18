@@ -1,5 +1,6 @@
 package org.example;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.jena.rdf.model.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -7,13 +8,20 @@ import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import virtuoso.jena.driver.VirtModel;
 
 import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -41,6 +49,7 @@ public class JsonToModelAutomatedTest implements JsonToModel {
     @Value("${virtuoso.triplestore.password}")
     private String VIRTUOSO_TRIPLESTORE_PASSWORD;
     private Logger logger = LoggerFactory.getLogger(JsonToModelAutomatedTest.class);
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public JsonToModelAutomatedTest() {
         model = ModelFactory.createDefaultModel();
@@ -63,20 +72,22 @@ public class JsonToModelAutomatedTest implements JsonToModel {
 
     }
 
-    public String jsonToModel() {
-        JSONParser parser = new JSONParser();
+    public JSONObject parseFileToJSONObject() {
+
         try {
-            Object obj = parser.parse(new FileReader("/example.json"));
-            JSONObject jsonObject = (JSONObject) obj;
-            parseJsonToModel(jsonObject);
-            logger.info("Koan error!");
+            org.springframework.core.io.Resource resource = new ClassPathResource("example.json");
+            String jsonString = new String(FileCopyUtils.copyToByteArray(resource.getInputStream()));
+            return new JSONObject(jsonString);
+            logger.info("{}", jsonObject);
         } catch (Exception e) {
-            logger.error("Error!");
+            logger.error(e.toString());
         }
-        return "";
+
     }
 
-    public void parseJsonToModel(JSONObject jsonObject) {
+    public void parseJsonToModel(String file) {
+        JSONObject jsonObject = parseFileToJSONObject();
+
         // Get the array of experiments
         JSONArray experiments = jsonObject.getJSONArray("explanations");
         VirtModel virtModel;
