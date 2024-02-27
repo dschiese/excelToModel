@@ -5,8 +5,8 @@
     <servers>
         <server>
             <id>ossrh</id>
-            <username>${env.MAVEN_USERNAME}</username>
-            <password>${env.MAVEN_PASSWORD}</password>
+            <username>${env.server-username}</username>
+            <password>${env.server-password}</password>
         </server>
     </servers>
 </settings>
