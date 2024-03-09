@@ -13,19 +13,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repo
-        uses: actions/checkout@v4
+    - name: Checkout Repository
+      uses: actions/checkout@v4
 
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          server-id: ossrh
-          server-username: PjaIuxmy
-          server-password: XW48ruQRFnwU2A6BQ6+80rDgs71ptUKFtM2qwpmPmFvN
-          gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+    - name: Set up Maven Central Repository # Configures settings.xml with required credentials
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        server-id: ossrh
+        server-username: ${{ secrets.OSSRH_USERNAME }}
+        server-password: ${{ secrets.OSSRH_PASSWORD }}
+        gpg-passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+        gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
 
-      - name: Build and Deploy
-        run: mvn clean deploy -X --batch-mode -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+    - name: Print settings.xml
+      run: cat $HOME/.m2/settings.xml
+
+    - name: Publish package
+      run: mvn clean deploy
