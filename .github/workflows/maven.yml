@@ -22,8 +22,8 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
           server-id: ossrh
-          server-username: ${{ secrets.OSSRH_USERNAME }}
-          server-password: ${{ secrets.OSSRH_PASSWORD }}
+          server-username: PjaIuxmy
+          server-password: XW48ruQRFnwU2A6BQ6+80rDgs71ptUKFtM2qwpmPmFvN
           gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
 
