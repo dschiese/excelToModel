@@ -22,9 +22,9 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         server-id: ossrh
-        server-username: ${{ secrets.OSSRH_USERNAME }}
-        server-password: ${{ secrets.OSSRH_PASSWORD }}
-        gpg-passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+        server-username: MAVEN_USER
+        server-password: MAVEN_PASSWORD
+        gpg-passphrase: MAVEN_GPG_PASSPHRASE
         gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
 
     - name: Print settings.xml
@@ -32,3 +32,7 @@ jobs:
 
     - name: Publish package
       run: mvn clean deploy
+      env:
+        MAVEN_USER: ${{ secrets.OSSRH_USERNAME }}
+        MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+        MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
